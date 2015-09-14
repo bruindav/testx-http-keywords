@@ -1,6 +1,6 @@
 {
   "name": "testx-pdf-keywords",
-  "version": "0.2.0",
+  "version": "0.1.0",
   "description": "Keywords to test pdf files using the testx library.",
   "main": "index.coffee",
   "dependencies": {
