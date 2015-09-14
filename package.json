@@ -1,7 +1,7 @@
 {
-  "name": "testx-pdf-keywords",
+  "name": "testx-http-keywords",
   "version": "0.1.0",
-  "description": "Keywords to test pdf files using the testx library.",
+  "description": "Keywords to send simple http requests using the testx library.",
   "main": "index.coffee",
   "dependencies": {
     "coffee-errors": "^0.8.6",
