@@ -19,6 +19,10 @@ testx.addKeywords(require('testx-http-keywords'))
 
 | Keyword                | Argument name | Argument value  | Description | Supports repeating arguments |
 | ---------------------- | ------------- | --------------- |------------ | ---------------------------- |
-| send http get request     |               |                 | send a http get request and check if the response status code is 200 |  |
+| send http get request  |               |                 | send a http GET request and check if the response status code is 200 |  |
 |                        | url           | relative url to which the request will be sent || No |
+|                        | expected status code   | expected status code of the response, the test will fail if the actual status code is different; defaults to 200 || No |
+| send http post request |               |                 | send a http POST request and check if the response status code is 200 |  |
+|                        | url           | relative url to which the request will be sent || No |
+|                        | json          | a valid JSON string that contains the body of the request; defaults to empty object || No |
 |                        | expected status code   | expected status code of the response, the test will fail if the actual status code is different; defaults to 200 || No |
