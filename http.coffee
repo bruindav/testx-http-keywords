@@ -9,7 +9,7 @@ send = (method) -> (url, payload) ->
   if payload then options.json = JSON.parse payload
   console.log "make http request with options", options
   deferred = q.defer()
-  request.post options, (error, response, body) ->
+  request options, (error, response, body) ->
     deferred.reject error if error
     deferred.resolve response.statusCode
   deferred.promise
