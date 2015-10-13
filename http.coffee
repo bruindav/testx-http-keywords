@@ -2,13 +2,13 @@ q = require 'q'
 request = require 'request'
 
 send = (method) -> (url, payload) ->
+  fullUrl = if browser?.baseUrl then browser.baseUrl + url else url
   options =
     method: method
-    url: url
+    url: fullUrl
   if payload then options.json = JSON.parse payload
-  console.log 'options', options
+  console.log "make http request with options", options
   deferred = q.defer()
-  fullUrl = browser?.baseUrl + url
   request.post options, (error, response, body) ->
     deferred.reject error if error
     deferred.resolve response.statusCode
