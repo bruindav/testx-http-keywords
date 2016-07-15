@@ -15,7 +15,8 @@
     "testx": "^1.11.0"
   },
   "scripts": {
-    "test": "node_modules/mocha/bin/mocha --compilers mocha --compilers coffee:coffee-script/register"
+    "test": "protractor test/conf.coffee",
+    "test-docker": "docker run --rm -it -v `pwd`:/work --net=host testx/protractor test/conf.coffee"
   },
   "repository": {
     "type": "git",
