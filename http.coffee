@@ -1,8 +1,15 @@
 q = require 'q'
 request = require 'request'
 
+isFullUrl = (str) ->
+  str.match /^https?:\/\//i
+
 send = (method) -> (url, payload) ->
-  fullUrl = if browser?.baseUrl then browser.baseUrl + url else url
+  fullUrl = if isFullUrl(url)
+    url
+  else if browser?.baseUrl
+    browser.baseUrl + url
+  else url
   options =
     method: method
     url: fullUrl
