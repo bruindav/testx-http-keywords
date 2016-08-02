@@ -1,5 +1,5 @@
 runner = require 'testx'
 
-describe 'Google search 1', ->
-  it 'should display relevant results 11', ->
+describe 'HTTP keywords', ->
+  it 'should send get and post requests', ->
     runner.runExcelSheet 'test/xls/test.xlsx', 'Sheet1'
