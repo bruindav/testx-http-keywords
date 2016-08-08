@@ -21,7 +21,7 @@ testx.addKeywords(require('testx-http-keywords'))
 | ---------------------- | ------------- | --------------- |------------ | ---------------------------- |
 | send http get request  |               |                 | send a http GET request and check if the response status code is 200 |  |
 |                        | url           | relative url to which the request will be sent || No |
-|                        | headers       | custom http headers | Optional. Semicolon or new line-separated string of '='-separated key-value pairs. For example "User-Agent=testx, Something-Else='value with spaces'"| No |
+|                        | headers       | custom http headers | Optional. Semicolon or new line-separated string of '='-separated key-value pairs. For example "User-Agent=testx;Something-Else='value with spaces'"| No |
 |                        | expected status code   | expected status code of the response | Optional. The test will fail if the actual status code is different; defaults to 200| No |
 |                        | expected response  | expected content of the response | Optional. The test will fail if the actual content (body) of the response is not equal. | No |
 |                        | expected response regex | a regex to match against the response | Optional. The keyword will try to match the provided regular expression against the content (body) of the response and will fail if there is no match; currently it is not possible to provide regex matching options. | No |
@@ -29,7 +29,7 @@ testx.addKeywords(require('testx-http-keywords'))
 | send http post request |               |                 | send a http POST request and check if the response status code is 200 |  |
 |                        | url           | relative url to which the request will be sent || No |
 |                        | json          | a valid JSON string that contains the body of the request; defaults to empty object || No |
-|                        | headers       | custom headers | Optional. Semicolon or new line-separated string of '='-separated key-value pairs. For example "User-Agent=testx, Something-Else='value with spaces'"| No |
+|                        | headers       | custom headers | Optional. Semicolon or new line-separated string of '='-separated key-value pairs. For example "User-Agent=testx;Something-Else='value with spaces'"| No |
 |                        | expected status code   | expected status code of the response | Optional. The test will fail if the actual status code is different; defaults to 200| No |
 |                        | expected response  | expected content of the response | Optional. The test will fail if the actual content (body) of the response is not equal. | No |
 |                        | expected response regex | a regex to match against the response | Optional. The keyword will try to match the provided regular expression against the content (body) of the response and will fail if there is no match; currently it is not possible to provide regex matching options. | No |
