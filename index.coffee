@@ -5,6 +5,7 @@ _ = require 'underscore'
 namedParams = [
   'url'
   'json'
+  'headers'
   'expected status code'
   'expected response'
   'expected response regex'
@@ -14,7 +15,7 @@ stringifyAll = (values) ->
   String(v) for v in values
 
 send = (method) -> (args) ->
-  (http[method] args.url, args.json).then (response) ->
+  (http[method] args.url, args.json, args.headers).then (response) ->
     jsonPathParams = _.omit args, namedParams
     protractor.promise.controlFlow().execute -> #this is needed to execute multiple expects
       expect(response.statusCode).toEqual(parseInt(args['expected status code']) or 200)
