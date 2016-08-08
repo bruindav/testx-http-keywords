@@ -12,7 +12,7 @@ npm install testx-http-keywords --save
 After installing the package add the keywords to your protractor config file as follows:
 
 ```
-testx.addKeywords(require('testx-http-keywords'))
+testx.keywords.add(require('testx-http-keywords'))
 ```
 
 ## Keywords
