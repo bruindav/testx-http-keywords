@@ -22,6 +22,7 @@ send = (method) -> (url, payload, headers) ->
     deferred.resolve
       statusCode: response.statusCode
       body: body
+      headers: response.headers
   deferred.promise
 
 module.exports =

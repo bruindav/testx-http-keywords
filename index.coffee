@@ -1,6 +1,7 @@
 http = require './http'
 JSONPath = require 'jsonpath-plus'
 _ = require 'underscore'
+parseHeaders = require 'parse-key-value'
 
 namedParams = [
   'url'
@@ -9,6 +10,7 @@ namedParams = [
   'expected status code'
   'expected response'
   'expected response regex'
+  'expected headers'
 ]
 
 stringifyAll = (values) ->
@@ -23,6 +25,10 @@ send = (method) -> (args) ->
         expect(response.body).toEqual args['expected response']
       if args['expected response regex']
         expect(response.body).toMatch args['expected response regex']
+      if args['expected headers']
+        expectedHeaders = parseHeaders args['expected headers']
+        for expHeaderName, expHeaderValue of expectedHeaders
+          expect(response.headers[expHeaderName]).toMatch expHeaderValue, "Expected response header '#{expHeaderName}' to match '#{expHeaderValue}', but it was '#{response.headers[expHeaderName]}'"
       if Object.keys(jsonPathParams)?.length
         try
           parsedBody = if typeof response.body is 'object'
