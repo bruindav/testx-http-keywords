@@ -20,7 +20,11 @@ send = (method) -> (args) ->
   (http[method] args.url, args.json, args.headers).then (response) ->
     jsonPathParams = _.omit args, namedParams
     protractor.promise.controlFlow().execute -> #this is needed to execute multiple expects
-      expect(response.statusCode).toEqual(parseInt(args['expected status code']) or 200)
+      expectedResponseStatus = parseInt(args['expected status code'])
+      if(method is 'delete')
+        expect(response.statusCode in [expectedResponseStatus, 200, 202, 204]).toBeTruthy()
+      else
+        expect(response.statusCode).toEqual(expectedResponseStatus or 200)
       if args['expected response']
         expect(response.body).toEqual args['expected response']
       if args['expected response regex']
@@ -55,3 +59,4 @@ send = (method) -> (args) ->
 module.exports =
   'send http get request': send 'get'
   'send http post request': send 'post'
+  'send http delete request': send 'delete'
