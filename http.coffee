@@ -28,3 +28,4 @@ send = (method) -> (url, payload, headers) ->
 module.exports =
   get: send "GET"
   post: send "POST"
+  delete: send "DELETE"
