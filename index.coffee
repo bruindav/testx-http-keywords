@@ -17,9 +17,9 @@ stringifyAll = (values) ->
   String(v) for v in values
 
 send = (method) -> (args) ->
-  (http[method] args.url, args.json, args.headers).then (response) ->
-    jsonPathParams = _.omit args, namedParams
-    protractor.promise.controlFlow().execute -> #this is needed to execute multiple expects
+  protractor.promise.controlFlow().execute -> #this is needed to execute multiple expects
+    (http[method] args.url, args.json, args.headers).then (response) ->
+      jsonPathParams = _.omit args, namedParams
       expectedResponseStatus = parseInt(args['expected status code'])
       if(method is 'delete')
         expect(response.statusCode in [expectedResponseStatus, 200, 202, 204]).toBeTruthy()
