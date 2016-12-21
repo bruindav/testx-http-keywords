@@ -1,5 +1,3 @@
-testx = require 'testx'
-
 exports.config =
   directConnect: true
   specs: ['spec/spec*']
@@ -25,5 +23,6 @@ exports.config =
       actionTimeout: 4000
 
   onPrepare: ->
+    require 'testx'
     testx.keywords.add require('../')
     beforeEach -> browser.ignoreSynchronization = true
