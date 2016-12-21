@@ -16,23 +16,35 @@ namedParams = [
 stringifyAll = (values) ->
   String(v) for v in values
 
-send = (method) -> (args) ->
+printable = (obj, delimiter = ', ') ->
+    ("#{k}: #{v}" for k, v of obj).join delimiter
+
+assertFailedMsg = (msg, ctx) ->
+  "#{msg} at #{printable _.pick(ctx._meta, 'file', 'sheet', 'Row')}"
+
+send = (method) -> (args, ctx) ->
   protractor.promise.controlFlow().execute -> #this is needed to execute multiple expects
     (http[method] args.url, args.json, args.headers).then (response) ->
       jsonPathParams = _.omit args, namedParams
       expectedResponseStatus = parseInt(args['expected status code'])
       if(method is 'delete')
-        expect(response.statusCode in [expectedResponseStatus, 200, 202, 204]).toBeTruthy()
+        failMsg = assertFailedMsg "Expected response status code to be 200, 202 or 204, but it was '#{response.statusCode}'", ctx
+        expect(response.statusCode in [expectedResponseStatus, 200, 202, 204]).toBeTruthy failMsg
       else
-        expect(response.statusCode).toEqual(expectedResponseStatus or 200)
+        expected = expectedResponseStatus or 200
+        failMsg = assertFailedMsg "Expected response status code to be #{expected}, but it was #{response.statusCode}", ctx
+        expect(response.statusCode).toEqual expected, failMsg
       if args['expected response']
-        expect(response.body).toEqual args['expected response']
+        failMsg = assertFailedMsg "Expected response body to equal '#{args['expected response']}', but it was '#{response.body}'", ctx
+        expect(response.body).toEqual args['expected response'], failMsg
       if args['expected response regex']
-        expect(response.body).toMatch args['expected response regex']
+        failMsg = assertFailedMsg "Expected response body to match '#{args['expected response']}', but it was '#{response.body}'", ctx
+        expect(response.body).toMatch args['expected response regex'], failMsg
       if args['expected headers']
         expectedHeaders = parseHeaders args['expected headers']
         for expHeaderName, expHeaderValue of expectedHeaders
-          expect(response.headers[expHeaderName]).toMatch expHeaderValue, "Expected response header '#{expHeaderName}' to match '#{expHeaderValue}', but it was '#{response.headers[expHeaderName]}'"
+          failMsg = assertFailedMsg "Expected response header '#{expHeaderName}' to match '#{expHeaderValue}', but it was '#{response.headers[expHeaderName]}'", ctx
+          expect(response.headers[expHeaderName]).toMatch expHeaderValue, failMsg
       if Object.keys(jsonPathParams)?.length
         try
           parsedBody = if typeof response.body is 'object'
@@ -48,7 +60,7 @@ send = (method) -> (args) ->
         catch ex
           if ex instanceof SyntaxError
             throw new Error """
-                It seems, that you are trying to use JSONPath on a non-json response.
+                It seems, that you are trying to use JSONPath on a non-json response at #{printable _.pick(ctx._meta, 'file', 'sheet', 'Row')}.
                 The response I received was:
 
                 #{response.body}
