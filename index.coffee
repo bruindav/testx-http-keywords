@@ -56,7 +56,9 @@ send = (method) -> (args, ctx) ->
             values = JSONPath
               path: path
               json: parsedBody
-            expect(stringifyAll values).toContain expected
+            actual = stringifyAll values
+            failMsg = assertFailedMsg "Expected the value at JSON path '#{path}' to contain '#{expected}', but it was '#{actual}'", ctx
+            expect(actual).toContain expected, failMsg
         catch ex
           if ex instanceof SyntaxError
             throw new Error """
