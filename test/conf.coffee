@@ -17,11 +17,6 @@ exports.config =
   baseUrl: 'http://elasticsearch.ivs-graylog.rws.ictu:9200/'
   rootElement: 'html'
 
-  params:
-    testx:
-      logScript: false
-      actionTimeout: 4000
-
   onPrepare: ->
     require 'testx'
     testx.keywords.add require('../')
