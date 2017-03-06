@@ -11,6 +11,7 @@ namedParams = [
   'expected response'
   'expected response regex'
   'expected headers'
+  'expected missing json paths'
 ]
 
 stringifyAll = (values) ->
@@ -23,6 +24,21 @@ assertFailedMsg = (msg, ctx) ->
   "#{msg} at #{printable _.pick(ctx._meta, 'file', 'sheet', 'Row')}"
 
 send = (method) -> (args, ctx) ->
+  withParsedBody = (body, cb) ->
+    try
+      parsedBody = if typeof body is 'object' then body else JSON.parse body
+      cb parsedBody
+    catch ex
+      if ex instanceof SyntaxError
+        throw new Error """
+            It seems, that you are trying to use JSONPath on a non-json response at #{printable _.pick(ctx._meta, 'file', 'sheet', 'Row')}.
+            The response I received was:
+
+            #{body}
+          """
+      else
+        throw ex
+
   protractor.promise.controlFlow().execute -> #this is needed to execute multiple expects
     (http[method] args.url, args.json, args.headers).then (response) ->
       jsonPathParams = _.omit args, namedParams
@@ -45,13 +61,17 @@ send = (method) -> (args, ctx) ->
         for expHeaderName, expHeaderValue of expectedHeaders
           failMsg = assertFailedMsg "Expected response header '#{expHeaderName}' to match '#{expHeaderValue}', but it was '#{response.headers[expHeaderName]}'", ctx
           expect(response.headers[expHeaderName]).toMatch expHeaderValue, failMsg
+      if missingPaths = args['expected missing json paths']
+        withParsedBody response.body, (parsedBody) ->
+          for path in missingPaths
+            actual = JSONPath
+              path: path
+              json: parsedBody
+              wrap: false
+            failMsg = assertFailedMsg "Expected that JSON path '#{path}' does not exist in '#{JSON.stringify parsedBody}'", ctx
+            expect(actual).toBeUndefined failMsg
       if Object.keys(jsonPathParams)?.length
-        try
-          parsedBody = if typeof response.body is 'object'
-            response.body
-          else
-            JSON.parse response.body
-
+        withParsedBody response.body, (parsedBody) ->
           for path, expected of jsonPathParams
             values = JSONPath
               path: path
@@ -59,16 +79,6 @@ send = (method) -> (args, ctx) ->
             actual = stringifyAll values
             failMsg = assertFailedMsg "Expected the value at JSON path '#{path}' to contain '#{expected}', but it was '#{actual}'", ctx
             expect(actual).toContain expected, failMsg
-        catch ex
-          if ex instanceof SyntaxError
-            throw new Error """
-                It seems, that you are trying to use JSONPath on a non-json response at #{printable _.pick(ctx._meta, 'file', 'sheet', 'Row')}.
-                The response I received was:
-
-                #{response.body}
-              """
-          else
-            throw ex
 
 module.exports =
   'send http get request': send 'get'

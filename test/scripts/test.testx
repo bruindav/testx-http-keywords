@@ -1,6 +1,9 @@
 - send http get request:
     url: http://localhost:8888/test/get
     expected response: '{ "test": { "data": "Test Data" } }'
+    expected missing json paths:
+      - $.test.nosuchpath
+      - $.nothing.here
     $.test.data: Test Data
 - send http delete request:
     url: http://localhost:8888/test/delete
