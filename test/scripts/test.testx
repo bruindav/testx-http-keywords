@@ -1,3 +1,18 @@
+- send http request:
+    url: http://localhost:8888/test/get
+    expected response: '{ "test": { "data": "Test Data" } }'
+    expected missing json paths:
+      - $.test.nosuchpath
+      - $.nothing.here
+    $.test.data: Test Data
+- send http request:
+    method: get
+    url: http://localhost:8888/test/get
+    expected response: '{ "test": { "data": "Test Data" } }'
+    expected missing json paths:
+      - $.test.nosuchpath
+      - $.nothing.here
+    $.test.data: Test Data
 - send http get request:
     url: http://localhost:8888/test/get
     expected response: '{ "test": { "data": "Test Data" } }'
@@ -8,6 +23,13 @@
 - send http delete request:
     url: http://localhost:8888/test/delete
 - send http post request:
+    url: http://localhost:8888/test/post
+    json: '{ "test":{ "check":true}}'
+    headers: User-Agent=testx;Something='else entirely'
+    expected status code: 200
+    expected headers: content-type='text/html; charset=utf-8';'transfer-encoding'='chunked'
+- send http request:
+    method: post
     url: http://localhost:8888/test/post
     json: '{ "test":{ "check":true}}'
     headers: User-Agent=testx;Something='else entirely'
