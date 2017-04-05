@@ -25,7 +25,6 @@ assertFailedMsg = (msg, ctx) ->
   "#{msg} at #{printable _.pick(ctx._meta, 'file', 'sheet', 'Row')}"
 
 send = (method) -> (args, ctx) ->
-  method ?= args.method?.toLowerCase() or 'get'
   withParsedBody = (body, cb) ->
     try
       parsedBody = if typeof body is 'object' then body else JSON.parse body
@@ -83,7 +82,9 @@ send = (method) -> (args, ctx) ->
             expect(actual).toContain expected, failMsg
 
 module.exports =
-  'send http request': -> send()
+  'send http request': (args, ctx) ->
+    method = args.method?.toLowerCase() or 'get'
+    (send method) args, ctx
   'send http get request': send 'get'
   'send http post request': send 'post'
   'send http delete request': send 'delete'
