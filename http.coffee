@@ -6,7 +6,6 @@ isFullUrl = (str) ->
   str.match /^https?:\/\//i
 
 send = (method) -> (url, payload, headers) ->
-  console.log "----------", method, url, payload, headers
   fullUrl = if isFullUrl(url)
     url
   else if browser?.baseUrl
