@@ -13,6 +13,7 @@ function handleRequest(request, response){
             var json = JSON.parse(data);
             if(json.test.check) {
                 response.writeHead(200, {'Content-Type': 'text/html; charset=utf-8', 'transfer-encoding': 'chunked'});
+                response.write(data);
                 response.end();
             } else {
                 // Bad request
@@ -20,6 +21,12 @@ function handleRequest(request, response){
                 response.end();
             }
         });
+    } else if(request.url === '/test/put' && request.method === 'PUT') {
+      request.on("data", function(data) {
+          response.writeHead(201, {'Content-Type': 'text/html; charset=utf-8', 'transfer-encoding': 'chunked'});
+          response.write(data);
+          response.end();
+      });
     } else if(request.url === '/test/delete' && request.method === 'DELETE') {
         response.writeHead(204);
         response.end();

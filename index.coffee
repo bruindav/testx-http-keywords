@@ -1,12 +1,13 @@
 http = require './http'
 JSONPath = require 'jsonpath-plus'
-_ = require 'underscore'
+_ = require 'lodash'
 parseHeaders = require 'parse-key-value'
 
 namedParams = [
   'url'
   'method'
   'json'
+  'body'
   'headers'
   'expected status code'
   'expected response'
@@ -41,7 +42,7 @@ send = (method) -> (args, ctx) ->
         throw ex
 
   protractor.promise.controlFlow().execute -> #this is needed to execute multiple expects
-    (http[method] args.url, args.json, args.headers).then (response) ->
+    (http[method] _.pick args, 'url', 'body', 'json', 'headers').then (response) ->
       jsonPathParams = _.omit args, namedParams
       expectedResponseStatus = parseInt(args['expected status code'])
       if(method is 'delete')

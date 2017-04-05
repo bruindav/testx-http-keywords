@@ -35,8 +35,16 @@
     headers: User-Agent=testx;Something='else entirely'
     expected status code: 200
     expected headers: content-type='text/html; charset=utf-8';'transfer-encoding'='chunked'
+    expected response:
+      test:
+        check: true
 - send http request:
     method: post
     url: http://localhost:8888/test/post
     json: '{ "test":{ "check": false}}'
     expected status code: 400
+- send http put request:
+    url: http://localhost:8888/test/put
+    body: some text
+    expected status code: 201
+    expected response: some text
