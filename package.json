@@ -1,6 +1,6 @@
 {
   "name": "testx-http-keywords",
-  "version": "0.12.0",
+  "version": "0.13.0",
   "description": "Keywords to send simple http requests and check the responses using the testx library.",
   "main": "index.coffee",
   "author": "Greyarch BV",
@@ -10,12 +10,14 @@
     "jsonpath-plus": "^0.15.0",
     "lodash": "^4.17.4",
     "parse-key-value": "^1.0.0",
-    "request": "^2.73.0"
+    "request": "^2.73.0",
+    "xmldom": "^0.1.27",
+    "xpath": "0.0.24"
   },
   "devDependencies": {
     "coffee-script": "^1.10.0",
     "protractor": "^5.1.1",
-    "testx": "^2.4.2"
+    "testx": "^2.6.3"
   },
   "scripts": {
     "pretest": "webdriver-manager update",

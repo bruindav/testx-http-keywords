@@ -45,6 +45,13 @@
     expected status code: 400
 - send http put request:
     url: http://localhost:8888/test/put
-    body: some text
+    body: '"some" text'
     expected status code: 201
-    expected response: some text
+    expected response: '"some" text'
+- send http get request:
+    url: http://localhost:8888/test/xml
+    expected status code: 200
+    expected response: '<response><test>Test Response</test><test>Another Response</test></response>'
+    //test: '<test>Test Response</test>,<test>Another Response</test>'
+    //test[1]: '<test>Test Response</test>'
+    string(//test): 'Test Response'

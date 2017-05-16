@@ -1,5 +1,7 @@
 http = require './http'
 JSONPath = require 'jsonpath-plus'
+xpath = require('xpath')
+dom = require('xmldom').DOMParser
 _ = require 'lodash'
 parseHeaders = require 'parse-key-value'
 
@@ -43,7 +45,7 @@ send = (method) -> (args, ctx) ->
 
   protractor.promise.controlFlow().execute -> #this is needed to execute multiple expects
     (http[method] _.pick args, 'url', 'body', 'json', 'headers').then (response) ->
-      jsonPathParams = _.omit args, namedParams
+      pathParams = _.omit args, namedParams
       expectedResponseStatus = parseInt(args['expected status code'])
       if(method is 'delete')
         failMsg = assertFailedMsg "Expected response status code to be 200, 202 or 204, but it was '#{response.statusCode}'", ctx
@@ -72,15 +74,33 @@ send = (method) -> (args, ctx) ->
               wrap: false
             failMsg = assertFailedMsg "Expected that JSON path '#{path}' does not exist in '#{JSON.stringify parsedBody}'", ctx
             expect(actual).toBeUndefined failMsg
-      if Object.keys(jsonPathParams)?.length
-        withParsedBody response.body, (parsedBody) ->
-          for path, expected of jsonPathParams
-            values = JSONPath
-              path: path
-              json: parsedBody
-            actual = stringifyAll values
-            failMsg = assertFailedMsg "Expected the value at JSON path '#{path}' to contain '#{expected}', but it was '#{actual}'", ctx
-            expect(actual).toContain expected, failMsg
+      if Object.keys(pathParams)?.length
+        switch
+          when response.headers['content-type'] is 'application/json'
+            withParsedBody response.body, (parsedBody) ->
+              for path, expected of pathParams
+                values = JSONPath
+                  path: path
+                  json: parsedBody
+                actual = stringifyAll values
+                failMsg = assertFailedMsg "Expected the value at JSON path '#{path}' to contain '#{expected}', but it was '#{actual}'", ctx
+                expect(actual).toContain expected, failMsg
+          when response.headers['content-type'] in ['application/xml', 'text/xml']
+            for path, expected of pathParams
+              doc = new dom().parseFromString(response.body)
+              actual = xpath.select(path, doc)
+              failMsg = assertFailedMsg "Expected the value at xpath '#{path}' to equal '#{expected}', but it was '#{actual}'", ctx
+              expect(actual?.toString()).toEqual expected, failMsg
+          else
+            throw new Error """
+                It seems, that you are trying to use JSONPath or XPath on a response
+                with a Content-Type header of #{response.headers['content-type']}
+                I only know how to deal with 'application/json', 'application/xml' or 'text/xml'
+                at #{printable _.pick(ctx._meta, 'file', 'sheet', 'Row')}.
+                The response I received was:
+
+                #{body}
+              """
 
 module.exports =
   'send http request': (args, ctx) ->
