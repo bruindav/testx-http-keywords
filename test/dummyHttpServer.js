@@ -35,7 +35,9 @@ function handleRequest(request, response) {
     response.writeHead(204);
     response.end();
   } else if (request.url === "/test/xml") {
-    response.writeHead(200, { "Content-Type": "application/xml" });
+    response.writeHead(200, {
+      "Content-Type": "application/xml; charset=ISO-8859-1"
+    });
     response.end(
       "<response><test>Test Response</test><test>Another Response</test></response>"
     );

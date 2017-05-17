@@ -18,6 +18,16 @@ namedParams = [
   'expected missing json paths'
 ]
 
+String::startsWith ?= (s) -> @slice(0, s.length) == s
+
+isContentType = (contentTypeHeader, contentType) ->
+  if contentType is 'xml'
+    contentTypeHeader.startsWith('application/xml') or contentTypeHeader.startsWith('text/xml')
+  else if contentType is 'json'
+    contentTypeHeader.startsWith 'application/json'
+  else
+    contentTypeHeader.startsWith contentType
+
 stringifyAll = (values) ->
   String(v) for v in values
 
@@ -76,7 +86,7 @@ send = (method) -> (args, ctx) ->
             expect(actual).toBeUndefined failMsg
       if Object.keys(pathParams)?.length
         switch
-          when response.headers['content-type'] is 'application/json'
+          when isContentType response.headers['content-type'], 'json'
             withParsedBody response.body, (parsedBody) ->
               for path, expected of pathParams
                 values = JSONPath
@@ -85,7 +95,7 @@ send = (method) -> (args, ctx) ->
                 actual = stringifyAll values
                 failMsg = assertFailedMsg "Expected the value at JSON path '#{path}' to contain '#{expected}', but it was '#{actual}'", ctx
                 expect(actual).toContain expected, failMsg
-          when response.headers['content-type'] in ['application/xml', 'text/xml']
+          when isContentType response.headers['content-type'], 'xml'
             for path, expected of pathParams
               doc = new dom().parseFromString(response.body)
               actual = xpath.select(path, doc)
@@ -93,13 +103,15 @@ send = (method) -> (args, ctx) ->
               expect(actual?.toString()).toEqual expected, failMsg
           else
             throw new Error """
+                Error occurred in #{printable _.pick(ctx._meta, 'file', 'sheet', 'Row')}.
+
                 It seems, that you are trying to use JSONPath or XPath on a response
-                with a Content-Type header of #{response.headers['content-type']}
+                with a Content-Type header '#{response.headers['content-type']}'.
                 I only know how to deal with 'application/json', 'application/xml' or 'text/xml'
-                at #{printable _.pick(ctx._meta, 'file', 'sheet', 'Row')}.
+
                 The response I received was:
 
-                #{body}
+                #{response.body}
               """
 
 module.exports =
