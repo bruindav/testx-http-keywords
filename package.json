@@ -21,8 +21,8 @@
   },
   "scripts": {
     "pretest": "webdriver-manager update",
-    "test": "protractor test/conf.coffee",
-    "test-docker": "docker run --rm -it -v `pwd`:/work --net=host testx/protractor test/conf.coffee"
+    "test": "protractor test/conf.js",
+    "test-docker": "docker run --rm -it -v `pwd`:/work --net=host testx/protractor test/conf.js"
   },
   "repository": {
     "type": "git",
