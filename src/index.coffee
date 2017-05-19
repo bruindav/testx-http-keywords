@@ -22,7 +22,8 @@ String::startsWith ?= (s) -> @slice(0, s.length) == s
 
 isContentType = (contentTypeHeader, contentType) ->
   if contentType is 'xml'
-    contentTypeHeader.startsWith('application/xml') or contentTypeHeader.startsWith('text/xml')
+    contentTypeHeader.startsWith('application/xml') or
+      contentTypeHeader.startsWith('text/xml')
   else if contentType is 'json'
     contentTypeHeader.startsWith 'application/json'
   else
@@ -32,7 +33,7 @@ stringifyAll = (values) ->
   String(v) for v in values
 
 printable = (obj, delimiter = ', ') ->
-    ("#{k}: #{v}" for k, v of obj).join delimiter
+  ("#{k}: #{v}" for k, v of obj).join delimiter
 
 assertFailedMsg = (msg, ctx) ->
   "#{msg} at #{printable _.pick(ctx._meta, 'file', 'sheet', 'Row')}"

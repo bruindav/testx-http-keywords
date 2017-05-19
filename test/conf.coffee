@@ -19,5 +19,5 @@ exports.config =
 
   onPrepare: ->
     require 'testx'
-    testx.keywords.add require('../')
+    testx.keywords.add require('../lib')
     beforeEach -> browser.ignoreSynchronization = true

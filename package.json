@@ -2,11 +2,10 @@
   "name": "testx-http-keywords",
   "version": "0.13.1",
   "description": "Keywords to send simple http requests and check the responses using the testx library.",
-  "main": "index.coffee",
+  "main": "lib/index.js",
   "author": "Greyarch BV",
   "license": "ISC",
   "dependencies": {
-    "coffee-errors": "^0.8.6",
     "jsonpath-plus": "^0.15.0",
     "lodash": "^4.17.4",
     "parse-key-value": "^1.0.0",
@@ -16,12 +15,15 @@
   },
   "devDependencies": {
     "coffee-script": "^1.10.0",
+    "coffee-errors": "^0.8.6",
     "protractor": "^5.1.1",
     "testx": "^2.6.3"
   },
   "scripts": {
+    "build": "coffee  -o lib/ -c src/",
+    "prepublish": "npm test",
     "pretest": "webdriver-manager update",
-    "test": "protractor test/conf.coffee",
+    "test": "npm run build && protractor test/conf.coffee",
     "test-docker": "docker run --rm -it -v `pwd`:/work --net=host testx/protractor test/conf.coffee"
   },
   "repository": {
