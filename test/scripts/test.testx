@@ -48,6 +48,16 @@
     body: '"some" text'
     expected status code: 201
     expected response: '"some" text'
+- send http patch request:
+    url: http://localhost:8888/test/patch
+    json: '{ "test":{ "check": true}}'
+    expected status code: 200
+    expected response:
+      test:
+        check: true
+- send http head request:
+    url: http://localhost:8888/test/head
+    expected status code: 200
 - send http get request:
     url: http://localhost:8888/test/xml
     expected status code: 200

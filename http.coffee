@@ -28,3 +28,5 @@ module.exports =
   post: send "POST"
   put: send "PUT"
   delete: send "DELETE"
+  patch: send "PATCH"
+  head: send "HEAD"
