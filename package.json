@@ -1,6 +1,6 @@
 {
   "name": "testx-http-keywords",
-  "version": "0.13.1",
+  "version": "0.14.0",
   "description": "Keywords to send simple http requests and check the responses using the testx library.",
   "main": "index.coffee",
   "author": "Greyarch BV",
@@ -28,11 +28,7 @@
     "type": "git",
     "url": "http://www.github.com/greyarch/testx-http-keywords.git"
   },
-  "keywords": [
-    "http",
-    "test",
-    "testx"
-  ],
+  "keywords": ["http", "test", "testx"],
   "testx": {
     "logScript": false,
     "actionTimeout": 4000
