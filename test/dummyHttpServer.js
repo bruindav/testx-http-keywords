@@ -34,6 +34,11 @@ function handleRequest(request, response) {
   } else if (request.url === "/test/delete" && request.method === "DELETE") {
     response.writeHead(204);
     response.end();
+  } else if (request.url === "/test/patch" && request.method === "PATCH") {
+    echoRequestBody(request, response);
+  } else if (request.url === "/test/head" && request.method === "HEAD") {
+    response.writeHead(200);
+    response.end();
   } else if (request.url === "/test/xml") {
     response.writeHead(200, {
       "Content-Type": "application/xml; charset=ISO-8859-1"
@@ -45,6 +50,24 @@ function handleRequest(request, response) {
     response.writeHead(400);
     response.end();
   }
+}
+
+function echoRequestBody(request, response) {
+    request.on("data", function(data) {
+      var json = JSON.parse(data);
+      if (json.test.check) {
+        response.writeHead(200, {
+          "Content-Type": "text/html; charset=utf-8",
+          "transfer-encoding": "chunked"
+        });
+        response.write(data);
+        response.end();
+      } else {
+        // Bad request
+        response.writeHead(400, {});
+        response.end();
+      }
+    });
 }
 
 var server = http.createServer(handleRequest);

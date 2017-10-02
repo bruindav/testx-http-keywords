@@ -122,3 +122,5 @@ module.exports =
   'send http post request': send 'post'
   'send http delete request': send 'delete'
   'send http put request': send 'put'
+  'send http patch request': send 'patch'
+  'send http head request': send 'head'
