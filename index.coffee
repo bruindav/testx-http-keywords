@@ -65,7 +65,9 @@ send = (method) -> (args, ctx) ->
         expected = if args['expected response']?.trim
           args['expected response'].trim().replace /\r/g, ''
         else args['expected response']
-        actual = if response.body?.trim then response.body.trim() else response.body
+        actual = if response.body?.trim
+          response.body.trim().replace /\r/g, ''
+        else response.body
         failMsg = assertFailedMsg "Expected response body to equal '#{expected}', but it was '#{actual}'", ctx
         expect(actual).toEqual expected, failMsg
       if args['expected response regex']
