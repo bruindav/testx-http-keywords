@@ -5,13 +5,13 @@ const PORT = 8888;
 function handleRequest(request, response) {
   if (request.url === "/test/get" && request.method === "GET") {
     response.writeHead(200, { "Content-Type": "application/json" });
-    response.end('{ "test": { "data": "Test Data" } }');
+    response.end('{\n"test": { "data": "Test Data" }\n}');
   } else if (request.url === "/test/post" && request.method === "POST") {
     request.on("data", function(data) {
       var json = JSON.parse(data);
       if (json.test.check) {
         response.writeHead(200, {
-          "Content-Type": "text/html; charset=utf-8",
+          "Content-Type": "application/json; charset=utf-8",
           "transfer-encoding": "chunked"
         });
         response.write(data);

@@ -28,9 +28,6 @@ isContentType = (contentTypeHeader, contentType) ->
   else
     contentTypeHeader.startsWith contentType
 
-stringifyAll = (values) ->
-  String(v) for v in values
-
 printable = (obj, delimiter = ', ') ->
     ("#{k}: #{v}" for k, v of obj).join delimiter
 
@@ -65,8 +62,12 @@ send = (method) -> (args, ctx) ->
         failMsg = assertFailedMsg "Expected response status code to be #{expected}, but it was #{response.statusCode}", ctx
         expect(response.statusCode).toEqual expected, failMsg
       if args['expected response']
-        failMsg = assertFailedMsg "Expected response body to equal '#{args['expected response']}', but it was '#{response.body}'", ctx
-        expect(response.body).toEqual args['expected response'], failMsg
+        expected = if args['expected response']?.trim
+          args['expected response'].trim().replace /\r/g, ''
+        else args['expected response']
+        actual = if response.body?.trim then response.body.trim() else response.body
+        failMsg = assertFailedMsg "Expected response body to equal '#{expected}', but it was '#{actual}'", ctx
+        expect(actual).toEqual expected, failMsg
       if args['expected response regex']
         failMsg = assertFailedMsg "Expected response body to match '#{args['expected response']}', but it was '#{response.body}'", ctx
         expect(response.body).toMatch args['expected response regex'], failMsg
@@ -89,10 +90,9 @@ send = (method) -> (args, ctx) ->
           when isContentType response.headers['content-type'], 'json'
             withParsedBody response.body, (parsedBody) ->
               for path, expected of pathParams
-                values = JSONPath
+                actual = JSONPath
                   path: path
                   json: parsedBody
-                actual = stringifyAll values
                 failMsg = assertFailedMsg "Expected the value at JSON path '#{path}' to contain '#{expected}', but it was '#{actual}'", ctx
                 expect(actual).toContain expected, failMsg
           when isContentType response.headers['content-type'], 'xml'
