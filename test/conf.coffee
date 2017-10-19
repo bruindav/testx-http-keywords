@@ -1,6 +1,6 @@
 exports.config =
   directConnect: true
-  specs: ['spec/spec*']
+  specs: ['spec/*']
 
   capabilities:
     browserName: 'chrome'

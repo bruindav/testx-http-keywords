@@ -44,9 +44,7 @@
     headers: User-Agent=testx;Something='else entirely'
     expected status code: 200
     expected headers: content-type='application/json; charset=utf-8';'transfer-encoding'='chunked'
-    expected response:
-      test:
-        check: true
+    expected response: '{"test":{"check":true}}'
 - send http request:
     method: post
     url: http://localhost:8888/test/post
@@ -54,13 +52,8 @@
     headers: User-Agent=testx;Something='else entirely'
     expected status code: 200
     expected headers: content-type='application/json; charset=utf-8';'transfer-encoding'='chunked'
-    expected response:
-      test:
-        check:
-          json:
-            path: true
-            str: val
-            none:
+    expected response: '{"test":{"check":{"json":{"path":true,"str":"val","none":null}}}}'
+    expected response regex: none":null\}\}
     $.test.check:
       json:
         path: true
@@ -80,9 +73,7 @@
     url: http://localhost:8888/test/patch
     json: '{ "test":{ "check": true}}'
     expected status code: 200
-    expected response:
-      test:
-        check: true
+    expected response: '{"test":{"check":true}}'
 - send http head request:
     url: http://localhost:8888/test/head
     expected status code: 200

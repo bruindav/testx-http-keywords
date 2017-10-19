@@ -65,14 +65,17 @@ send = (method) -> (args, ctx) ->
         expected = if args['expected response']?.trim
           args['expected response'].trim().replace /\r/g, ''
         else args['expected response']
-        actual = if response.body?.trim
-          response.body.trim().replace /\r/g, ''
-        else response.body
+        body = if typeof response.body is 'object' then JSON.stringify(response.body) else response.body
+        actual = if body?.trim
+          body.trim().replace /\r/g, ''
+        else body
         failMsg = assertFailedMsg "Expected response body to equal '#{expected}', but it was '#{actual}'", ctx
         expect(actual).toEqual expected, failMsg
       if args['expected response regex']
-        failMsg = assertFailedMsg "Expected response body to match '#{args['expected response']}', but it was '#{response.body}'", ctx
-        expect(response.body).toMatch args['expected response regex'], failMsg
+        expected = args['expected response regex']
+        actual = if typeof response.body is 'object' then JSON.stringify(response.body) else response.body
+        failMsg = assertFailedMsg "Expected response body to match '#{expected}', but it was '#{actual}'", ctx
+        expect(actual).toMatch expected, failMsg
       if args['expected headers']
         expectedHeaders = parseHeaders args['expected headers']
         for expHeaderName, expHeaderValue of expectedHeaders
