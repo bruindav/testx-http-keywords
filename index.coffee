@@ -16,6 +16,7 @@ namedParams = [
   'expected response regex'
   'expected headers'
   'expected missing json paths'
+  'expected present json paths'
 ]
 
 String::startsWith ?= (s) -> @slice(0, s.length) == s
@@ -90,6 +91,15 @@ send = (method) -> (args, ctx) ->
               wrap: false
             failMsg = assertFailedMsg "Expected that JSON path '#{path}' does not exist in '#{JSON.stringify parsedBody}'", ctx
             expect(actual).toBeUndefined failMsg
+       if presentPaths = args['expected present json paths']
+        withParsedBody response.body, (parsedBody) ->
+          for path in presentPaths
+            actual = JSONPath
+              path: path
+              json: parsedBody
+              wrap: false
+            failMsg = assertFailedMsg "Expected that JSON path '#{path}' does exist in '#{JSON.stringify parsedBody}'", ctx
+            expect(actual).toBeDefined failMsg
       if Object.keys(pathParams)?.length
         switch
           when isContentType response.headers['content-type'], 'json'
